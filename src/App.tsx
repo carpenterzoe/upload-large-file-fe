@@ -1,11 +1,13 @@
 import React from 'react';
-import axios from 'axios'
+import axios from '@/request'
 import SparkMD5 from 'spark-md5'
 
 import { UploadOutlined } from '@ant-design/icons';
 import type { UploadProps } from 'antd';
 import { Button, message, Upload } from 'antd';
 import { RcFile } from 'antd/es/upload';
+
+import { upload_already } from '@/api/upload'
 
 /**
  * 1. 获取文件hash，作为这批切片通用的标识，查询已经上传的切片信息
@@ -54,7 +56,7 @@ const props: UploadProps = {
 
     // 获取已上传的切片信息
     try {
-      const res = await axios.get(`/upload_already?hash=${HASH}`)
+      const res = await upload_already(HASH)
       console.log('已上传的切片信息 res: ', res);
       // TODO: 获取已上传的信息，保存到 already
     } catch (error) {
@@ -118,15 +120,15 @@ const props: UploadProps = {
       formData.append('file', chunk.file)
       formData.append('filename', chunk.filename)
   
-      axios.post('/upload_chunk', {
-        body: formData
-      }).then(res => {
-        console.log('res: ', res);
-        // if (res.code === 200) {
-        //   onComplete()
-        // }
-        // return Promise.reject(res.msg)
-      })
+      // axios.post('/upload_chunk', {
+      //   body: formData
+      // }).then(res => {
+      //   console.log('res: ', res);
+      //   // if (res.code === 200) {
+      //   //   onComplete()
+      //   // }
+      //   // return Promise.reject(res.msg)
+      // })
     })
   },
   onChange(info) {
